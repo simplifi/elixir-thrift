@@ -49,7 +49,6 @@ defmodule Thrift.Mixfile do
       ],
 
       # Docs
-      name: "sifi_ex_elixir-thrift_v2", # "unique" name
       docs: [
         main: "Thrift",
         extra_section: "Guides",
@@ -93,6 +92,7 @@ defmodule Thrift.Mixfile do
 
   defp package do
     [
+      name: "sifi_thrift",
       maintainers: [
         "Steve Cohen",
         "James Fish",
