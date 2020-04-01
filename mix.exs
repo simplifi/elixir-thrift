@@ -7,10 +7,12 @@ defmodule Thrift.Mixfile do
 
   This package includes support for parsing Thrift IDL files, working with the
   Thrift binary protocol, and building high-performance clients and servers.
+
+  Forked by Simpli.fi for internal versioning
   """
 
-  @version "2.0.0-dev"
-  @project_url "https://github.com/pinterest/elixir-thrift"
+  @version "2.0.0-dev.1"
+  @project_url "https://github.com/simplifi/elixir-thrift"
 
   def project do
     [
@@ -47,7 +49,7 @@ defmodule Thrift.Mixfile do
       ],
 
       # Docs
-      name: "Thrift",
+      name: "sifi_ex_elixir-thrift_v2", # "unique" name
       docs: [
         main: "Thrift",
         extra_section: "Guides",
