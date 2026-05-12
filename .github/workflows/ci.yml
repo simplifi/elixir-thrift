@@ -5,6 +5,7 @@ on:
   push:
     branches:
       - master
+      - 2.0.0-dev.2
   pull_request:
     branches:
       - master
@@ -12,14 +13,14 @@ on:
 jobs:
   format:
     name: Format (Elixir ${{ matrix.pair.elixir }} / OTP ${{ matrix.pair.otp }})
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-22.04
     strategy:
       fail-fast: false
       matrix:
         include:
           - pair:
-              elixir: 1.11
-              otp: 23
+              elixir: 1.12
+              otp: 24
     env:
       MIX_ENV: test
     steps:
@@ -34,17 +35,14 @@ jobs:
         run: mix format --check-formatted
   test:
     name: Test (Elixir ${{ matrix.pair.elixir }} / OTP ${{ matrix.pair.otp }})
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-22.04
     strategy:
       fail-fast: false
       matrix:
         include:
           - pair:
-              elixir: 1.7
-              otp: 22
-          - pair:
-              elixir: 1.11
-              otp: 23
+              elixir: 1.12
+              otp: 24
               coverage: true
     env:
       MIX_ENV: test
@@ -55,13 +53,13 @@ jobs:
           otp-version: ${{ matrix.pair.otp }}
           elixir-version: ${{ matrix.pair.elixir }}
       - name: Set up dependency cache
-        uses: actions/cache@v1
+        uses: actions/cache@v4
         with:
           path: deps/
           key: ${{ runner.os }}-${{ matrix.pair.otp }}-${{ matrix.pair.elixir }}-deps-${{ hashFiles('**/mix.lock') }}
           restore-keys: ${{ runner.os }}-${{ matrix.pair.otp }}-${{ matrix.pair.elixir }}-deps-
       - name: Set up build cache
-        uses: actions/cache@v1
+        uses: actions/cache@v4
         with:
           path: _build/test/
           key: ${{ runner.os }}-${{ matrix.pair.otp }}-${{ matrix.pair.elixir }}-build-${{ hashFiles('**/mix.lock') }}
