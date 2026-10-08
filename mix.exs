@@ -11,7 +11,7 @@ defmodule Thrift.Mixfile do
   Forked by Simpli.fi for internal versioning
   """
 
-  @version "2.0.0-dev.2"
+  @version "2.0.0-dev.3"
   @project_url "https://github.com/simplifi/elixir-thrift"
 
   def project do
@@ -87,7 +87,7 @@ defmodule Thrift.Mixfile do
 
       # Runtime
       {:connection, "~> 1.0"},
-      {:ranch, "~> 1.6"},
+      {:ranch, "~> 2.1"},
       {:telemetry, "~> 1.0"}
     ]
   end
