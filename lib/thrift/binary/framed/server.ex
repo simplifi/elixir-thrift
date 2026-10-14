@@ -53,15 +53,15 @@ defmodule Thrift.Binary.Framed.Server do
 
     transport_opts =
       opts
-      |> Keyword.get(:transport_opts, [])
+      |> Keyword.get(:transport_opts, %{})
       |> add_port_to_transport_opts(port)
+      |> add_num_acceptors(worker_count)
 
     validate_ssl_configuration!(ssl_opts)
 
     listener =
       :ranch.child_spec(
         name,
-        worker_count,
         :ranch_tcp,
         transport_opts,
         Thrift.Binary.Framed.ProtocolHandler,
@@ -85,6 +85,10 @@ defmodule Thrift.Binary.Framed.Server do
     # After Ranch 2.0, transport_opts is a map with socket opts under its own
     # key.
     Map.update(transport_opts, :socket_opts, [port: port], &Keyword.put(&1, :port, port))
+  end
+
+  defp add_num_acceptors(transport_opts, num_acceptors) when is_map(transport_opts) do
+    Map.put_new(transport_opts, :num_acceptors, num_acceptors)
   end
 
   @doc """
