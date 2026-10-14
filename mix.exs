@@ -87,7 +87,7 @@ defmodule Thrift.Mixfile do
 
       # Runtime
       {:connection, "~> 1.0"},
-      {:ranch, "~> 2.1"},
+      {:ranch, ">= 2.1.0 and < 2.3.0"},
       {:telemetry, "~> 1.0"}
     ]
   end
