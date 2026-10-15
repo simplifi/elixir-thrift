@@ -19,9 +19,9 @@ jobs:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
       - uses: erlef/setup-beam@54075bcc5e249e4758d363f27d099f55d843f124 # v1.24.1
         with:
-          otp-version: 22.2
-          elixir-version: '1.10'
+          otp-version: 25.3.2
           version-type: strict
+          elixir-version: 1.14.4
       - name: Install dependencies
         run: mix deps.get
       - name: Check format
