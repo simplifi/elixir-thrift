@@ -28,7 +28,7 @@ jobs:
         run: mix format --check-formatted
   test:
     name: Elixir ${{ matrix.elixir }} / OTP ${{ matrix.otp }}
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-latest
     container:
       image: hexpm/elixir:${{ matrix.elixir }}-erlang-${{ matrix.otp }}-debian-bullseye-20210902-slim
     strategy:
