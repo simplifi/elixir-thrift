@@ -99,6 +99,7 @@ defmodule Thrift.Mixfile do
         "Jon Parise",
         "Dan Swain"
       ],
+      organization: "simplifi",
       licenses: ["Apache 2.0"],
       links: %{"GitHub" => @project_url},
       files:
