@@ -27,21 +27,31 @@ jobs:
       - name: Check format
         run: mix format --check-formatted
   test:
-    name: OTP ${{ matrix.otp }} / Elixir ${{ matrix.elixir }}
+    name: Elixir ${{ matrix.elixir }} / OTP ${{ matrix.otp }}
     runs-on: ubuntu-22.04
+    container:
+      image: hexpm/elixir:${{ matrix.elixir }}-erlang-${{ matrix.otp }}-debian-bullseye-20210902-slim
     strategy:
       fail-fast: false
       matrix:
-        otp: ['22.2']
-        elixir: ['1.6', '1.7', '1.8', '1.9', '1.10']
+        include:
+          - elixir: '1.6.6'
+            otp: '21.3.8.24'
+          - elixir: '1.7.4'
+            otp: '22.3.4.26'
+          - elixir: '1.8.2'
+            otp: '22.3.4.26'
+          - elixir: '1.9.4'
+            otp: '22.3.4.26'
+            coverage: true
+          - elixir: '1.10.4'
+            otp: '22.3.4.26'
     env:
       MIX_ENV: test
     steps:
+      - name: Install git
+        run: apt-get update -y && apt-get install -y git
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
-      - uses: erlef/setup-beam@54075bcc5e249e4758d363f27d099f55d843f124 # v1.24.1
-        with:
-          otp-version: ${{ matrix.otp }}
-          elixir-version: ${{ matrix.elixir }}
       - name: Set up dependency cache
         uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
         with:
@@ -64,10 +74,10 @@ jobs:
           mix deps.compile
           mix compile --force --warnings-as-errors
       - name: Run tests
-        if: matrix.elixir != '1.9'
+        if: '!matrix.coverage'
         run: mix test
       - name: Run tests (with coverage)
-        if: matrix.elixir == '1.9'
+        if: matrix.coverage
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: mix coveralls.github
