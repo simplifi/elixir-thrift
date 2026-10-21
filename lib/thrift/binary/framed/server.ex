@@ -49,11 +49,14 @@ defmodule Thrift.Binary.Framed.Server do
     worker_count = Keyword.get(opts, :worker_count, 1)
     tcp_opts = Keyword.get(opts, :tcp_opts, [])
     ssl_opts = Keyword.get(opts, :ssl_opts, [])
+    on_connect = Keyword.get(opts, :on_connect)
 
     transport_opts =
       opts
       |> Keyword.get(:transport_opts, [])
-      |> Keyword.put(:port, port)
+      |> add_port_to_transport_opts(port)
+
+    validate_ssl_configuration!(ssl_opts)
 
     listener =
       :ranch.child_spec(
@@ -62,7 +65,7 @@ defmodule Thrift.Binary.Framed.Server do
         :ranch_tcp,
         transport_opts,
         Thrift.Binary.Framed.ProtocolHandler,
-        {server_module, handler_module, tcp_opts, ssl_opts}
+        {server_module, handler_module, on_connect, tcp_opts, ssl_opts}
       )
 
     Supervisor.start_link(
@@ -72,10 +75,36 @@ defmodule Thrift.Binary.Framed.Server do
     )
   end
 
+  defp add_port_to_transport_opts(transport_opts, port) when is_list(transport_opts) do
+    # Before Ranch 2.0, transport_opts is a keyword list with a mixture of
+    # Ranch and socket opts.
+    Keyword.put(transport_opts, :port, port)
+  end
+
+  defp add_port_to_transport_opts(transport_opts, port) when is_map(transport_opts) do
+    # After Ranch 2.0, transport_opts is a map with socket opts under its own
+    # key.
+    Map.update(transport_opts, :socket_opts, [port: port], &Keyword.put(&1, :port, port))
+  end
+
   @doc """
   Stops the server.
   """
   def stop(pid) do
     Supervisor.stop(pid)
+  end
+
+  # Ensure that SSL certs are available before starting server.
+  def validate_ssl_configuration!(ssl_opts) do
+    case Thrift.Transport.SSL.configuration(ssl_opts) do
+      {:error, %_exception{} = err} ->
+        raise err
+
+      nil ->
+        :ok
+
+      {optional, _ssl_opts} when optional in [:required, :optional] ->
+        :ok
+    end
   end
 end

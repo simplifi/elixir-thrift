@@ -11,14 +11,14 @@ defmodule Thrift.Mixfile do
   Forked by Simpli.fi for internal versioning
   """
 
-  @version "2.0.1"
+  @version "2.0.0-dev.2"
   @project_url "https://github.com/simplifi/elixir-thrift"
 
   def project do
     [
       app: :thrift,
       version: @version,
-      elixir: "~> 1.6",
+      elixir: "~> 1.7",
       deps: deps(),
 
       # Build Environment
@@ -57,6 +57,7 @@ defmodule Thrift.Mixfile do
           "CONTRIBUTING.md": [title: "Contributing"],
           "example/README.md": [filename: "example", title: "Example Project"]
         ],
+        source_ref: "master",
         source_url: @project_url,
         groups_for_modules: [
           "Abstract Syntax Tree": ~r"Thrift.AST.*",
@@ -86,7 +87,8 @@ defmodule Thrift.Mixfile do
 
       # Runtime
       {:connection, "~> 1.0"},
-      {:ranch, "~> 1.6"}
+      {:ranch, "~> 1.6"},
+      {:telemetry, "~> 1.0"}
     ]
   end
 
