@@ -9,7 +9,7 @@ defmodule Thrift.Mixfile do
   Thrift binary protocol, and building high-performance clients and servers.
   """
 
-  @version "2.0.0-dev"
+  @version "2.0.0"
   @project_url "https://github.com/pinterest/elixir-thrift"
 
   def project do
