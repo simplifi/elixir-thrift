@@ -106,12 +106,11 @@ defmodule Servers.Binary.Framed.SSLTest do
   ## Helpers
 
   defp get_certs() do
-    certs_path = Application.app_dir(:ssl, "examples/certs/etc/server")
-    cacerts = Path.join(certs_path, "cacerts.pem")
+    certs_path = Path.join([__DIR__, "..", "..", "..", "support", "certs"]) |> Path.expand()
     cert = Path.join(certs_path, "cert.pem")
     key = Path.join(certs_path, "key.pem")
 
-    {:ok, [cacertfile: cacerts, certfile: cert, keyfile: key]}
+    {:ok, [certfile: cert, keyfile: key]}
   end
 
   def test_configure() do

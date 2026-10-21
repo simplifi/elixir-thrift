@@ -70,9 +70,7 @@ defmodule Thrift.Binary.Framed.ProtocolHandler do
       {:error, reason} ->
         # :ssl.format_error handles posix errors as well as ssl errors
         Logger.info(fn ->
-          "#{inspect(handler_module)} (#{inspect(self())}) connection error: #{
-            :ssl.format_error(reason)
-          } (#{inspect(reason)})"
+          "#{inspect(handler_module)} (#{inspect(self())}) connection error: #{:ssl.format_error(reason)} (#{inspect(reason)})"
         end)
 
         :ok = transport.close(socket)
@@ -97,9 +95,7 @@ defmodule Thrift.Binary.Framed.ProtocolHandler do
 
       {:error, reason} ->
         Logger.info(fn ->
-          "#{inspect(handler_module)} (#{inspect(self())}) handshake error: #{
-            :ssl.format_error(reason)
-          } (#{inspect(reason)})"
+          "#{inspect(handler_module)} (#{inspect(self())}) handshake error: #{:ssl.format_error(reason)} (#{inspect(reason)})"
         end)
     end
   end
@@ -156,9 +152,7 @@ defmodule Thrift.Binary.Framed.ProtocolHandler do
       {:error, reason} ->
         # :ssl.format_error handles posix error as well as ssl
         Logger.info(fn ->
-          "#{inspect(handler_module)} (#{inspect(self())}) connection error: #{
-            :ssl.format_error(reason)
-          } (#{inspect(reason)})"
+          "#{inspect(handler_module)} (#{inspect(self())}) connection error: #{:ssl.format_error(reason)} (#{inspect(reason)})"
         end)
 
         :ok = transport.close(socket)
