@@ -50,7 +50,9 @@ jobs:
       MIX_ENV: test
     steps:
       - name: Install git
-        run: apt-get update -y && apt-get install -y git
+        run: |
+          sed -i '/security.debian.org/d' /etc/apt/sources.list
+          apt-get update -y && apt-get install -y git
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
       - name: Set up dependency cache
         uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
