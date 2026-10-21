@@ -11,7 +11,7 @@ defmodule Thrift.Mixfile do
   Forked by Simpli.fi for internal versioning
   """
 
-  @version "2.0.0-dev.1"
+  @version "2.0.1"
   @project_url "https://github.com/simplifi/elixir-thrift"
 
   def project do
@@ -79,7 +79,7 @@ defmodule Thrift.Mixfile do
   defp deps do
     [
       # Development
-      {:ex_doc, "~> 0.20", only: :dev, runtime: false},
+      {:ex_doc, "~> 0.34", only: :dev, runtime: false},
       {:excoveralls, "~> 0.12", only: :test, runtime: false},
       {:credo, "~> 1.0", only: :dev, runtime: false},
       {:dialyxir, "~> 1.0", only: :dev, runtime: false},
@@ -92,7 +92,6 @@ defmodule Thrift.Mixfile do
 
   defp package do
     [
-      name: "sifi_thrift",
       maintainers: [
         "Steve Cohen",
         "James Fish",
@@ -101,6 +100,7 @@ defmodule Thrift.Mixfile do
         "Jon Parise",
         "Dan Swain"
       ],
+      organization: "simplifi",
       licenses: ["Apache 2.0"],
       links: %{"GitHub" => @project_url},
       files:
