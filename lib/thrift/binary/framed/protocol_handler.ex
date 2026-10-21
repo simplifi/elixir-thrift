@@ -28,16 +28,18 @@ defmodule Thrift.Binary.Framed.ProtocolHandler do
     :recv_timeout
   ]
 
-  @spec start_link(reference, transport, {module, module, transport_opts, [SSL.option()]}) ::
+  @spec start_link(reference, port, transport, {module, module, transport_opts, [SSL.option()]}) ::
           GenServer.on_start()
   def start_link(
         ref,
+        socket,
         transport,
         {server_module, handler_module, on_connect, transport_opts, ssl_opts}
       ) do
     pid =
       spawn_link(__MODULE__, :init, [
         ref,
+        socket,
         transport,
         server_module,
         handler_module,
@@ -49,13 +51,13 @@ defmodule Thrift.Binary.Framed.ProtocolHandler do
     {:ok, pid}
   end
 
-  @dialyzer {:nowarn_function, init: 7}
-  @spec init(reference, :ranch_tcp, module, module, function, :ranch_tcp.opts(), [
+  @dialyzer {:nowarn_function, init: 8}
+  @spec init(reference, port, :ranch_tcp, module, module, function, :ranch_tcp.opts(), [
           SSL.option()
         ]) ::
           :ok | no_return
-  def init(ref, :ranch_tcp, server_module, handler_module, on_connect, tcp_opts, ssl_opts) do
-    {:ok, socket} = :ranch.handshake(ref)
+  def init(ref, socket, :ranch_tcp, server_module, handler_module, on_connect, tcp_opts, ssl_opts) do
+    :ok = :ranch.accept_ack(ref)
 
     {recv_timeout, tcp_opts} = Keyword.pop(tcp_opts, :recv_timeout, @default_timeout)
     :ok = :inet.setopts(socket, Keyword.put(tcp_opts, :packet, 4))
