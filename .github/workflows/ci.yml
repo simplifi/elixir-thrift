@@ -37,8 +37,8 @@ jobs:
     env:
       MIX_ENV: test
     steps:
-      - uses: actions/checkout@af513c7a016048ae468971c52ed77d9562c7c819 # v1.0.0
-      - uses: erlef/setup-beam@54075bcc5e249e4758d363f27d099f55d843f124 # v1.24.1
+      - uses: actions/checkout@v1.0.0
+      - uses: actions/setup-elixir@v1.2.0
         with:
           otp-version: ${{ matrix.otp }}
           elixir-version: ${{ matrix.elixir }}
