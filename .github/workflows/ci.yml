@@ -5,78 +5,79 @@ on:
   push:
     branches:
       - master
-      - 2.0.0-dev.2
-      - 2.0.0-dev.3
   pull_request:
     branches:
       - master
 
 jobs:
   format:
-    name: Format (Elixir ${{ matrix.pair.elixir }} / OTP ${{ matrix.pair.otp }})
-    runs-on: ubuntu-22.04
-    strategy:
-      fail-fast: false
-      matrix:
-        include:
-          - pair:
-              elixir: 1.12
-              otp: 24
+    name: Format
+    runs-on: ubuntu-latest
     env:
       MIX_ENV: test
     steps:
-      - uses: actions/checkout@v2
-      - uses: erlef/setup-elixir@v1
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - uses: erlef/setup-beam@54075bcc5e249e4758d363f27d099f55d843f124 # v1.24.1
         with:
-          otp-version: ${{ matrix.pair.otp }}
-          elixir-version: ${{ matrix.pair.elixir }}
+          otp-version: '25.3.2'
+          version-type: strict
+          elixir-version: '1.15.7'
       - name: Install dependencies
         run: mix deps.get
       - name: Check format
         run: mix format --check-formatted
   test:
-    name: Test (Elixir ${{ matrix.pair.elixir }} / OTP ${{ matrix.pair.otp }})
-    runs-on: ubuntu-22.04
+    name: Elixir ${{ matrix.elixir }} / OTP ${{ matrix.otp }}
+    runs-on: ubuntu-latest
+    container:
+      image: hexpm/elixir:${{ matrix.elixir }}-erlang-${{ matrix.otp }}-debian-bullseye-20210902-slim
     strategy:
       fail-fast: false
       matrix:
         include:
-          - pair:
-              elixir: 1.12
-              otp: 24
-              coverage: true
+          - elixir: '1.7.4'
+            otp: '22.3.4.26'
+          - elixir: '1.8.2'
+            otp: '22.3.4.26'
+          - elixir: '1.9.4'
+            otp: '22.3.4.26'
+            coverage: true
+          - elixir: '1.10.4'
+            otp: '22.3.4.26'
     env:
       MIX_ENV: test
     steps:
-      - uses: actions/checkout@v2
-      - uses: erlef/setup-elixir@v1
-        with:
-          otp-version: ${{ matrix.pair.otp }}
-          elixir-version: ${{ matrix.pair.elixir }}
+      - name: Install git
+        run: |
+          sed -i '/security.debian.org/d' /etc/apt/sources.list
+          apt-get update -y && apt-get install -y git
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
       - name: Set up dependency cache
-        uses: actions/cache@v4
+        uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
         with:
           path: deps/
-          key: ${{ runner.os }}-${{ matrix.pair.otp }}-${{ matrix.pair.elixir }}-deps-${{ hashFiles('**/mix.lock') }}
-          restore-keys: ${{ runner.os }}-${{ matrix.pair.otp }}-${{ matrix.pair.elixir }}-deps-
+          key: ${{ runner.os }}-${{ matrix.otp }}-${{ matrix.elixir }}-deps-${{ hashFiles('**/mix.lock') }}
+          restore-keys: ${{ runner.os }}-${{ matrix.otp }}-${{ matrix.elixir }}-deps-
       - name: Set up build cache
-        uses: actions/cache@v4
+        uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
         with:
           path: _build/test/
-          key: ${{ runner.os }}-${{ matrix.pair.otp }}-${{ matrix.pair.elixir }}-build-${{ hashFiles('**/mix.lock') }}
-          restore-keys: ${{ runner.os }}-${{ matrix.pair.otp }}-${{ matrix.pair.elixir }}-build-
+          key: ${{ runner.os }}-${{ matrix.otp }}-${{ matrix.elixir }}-build-${{ hashFiles('**/mix.lock') }}
+          restore-keys: ${{ runner.os }}-${{ matrix.otp }}-${{ matrix.elixir }}-build-
       - name: Install dependencies
         run: |
+          mix local.rebar --force
+          mix local.hex --force
           mix deps.get
       - name: Compile
         run: |
           mix deps.compile
           mix compile --force --warnings-as-errors
       - name: Run tests
-        if: ${{ !matrix.coverage }}
+        if: '!matrix.coverage'
         run: mix test
       - name: Run tests (with coverage)
-        if: ${{ matrix.coverage }}
+        if: matrix.coverage
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: mix coveralls.github
