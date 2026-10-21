@@ -11,7 +11,7 @@ defmodule Thrift.Mixfile do
   Forked by Simpli.fi for internal versioning
   """
 
-  @version "2.0.0-dev.2"
+  @version "2.0.2"
   @project_url "https://github.com/simplifi/elixir-thrift"
 
   def project do
