@@ -30,7 +30,7 @@ jobs:
     name: Elixir ${{ matrix.elixir }} / OTP ${{ matrix.otp }}
     runs-on: ubuntu-latest
     container:
-      image: hexpm/elixir:${{ matrix.elixir }}-erlang-${{ matrix.otp }}-debian-bullseye-20260610-slim
+      image: hexpm/elixir:${{ matrix.elixir }}-erlang-${{ matrix.otp }}-debian-trixie-20260610-slim
     strategy:
       fail-fast: false
       matrix:
