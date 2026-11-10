@@ -136,7 +136,7 @@ defmodule ThriftTestCase do
     quote bind_quoted: [module: __MODULE__, message: message, var: var, block: block] do
       if module.implement?(__MODULE__) do
         contents = module.quoted_contents(__MODULE__, block)
-        name = ExUnit.Case.register_test(__ENV__, __ENV__.file, __ENV__.line, :test, message, [])
+        name = ExUnit.Case.register_test(__ENV__, :test, message, [])
         def unquote(name)(unquote(var)), do: unquote(contents)
       else
         ExUnit.Case.test message do
