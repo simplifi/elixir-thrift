@@ -30,11 +30,8 @@ defmodule ThriftTestCase do
     config = ExUnit.configuration()
 
     case ExUnit.Filters.eval(config[:include], config[:exclude], tag, []) do
-      :ok ->
-        true
-
-      {:error, _} ->
-        false
+      :ok -> true
+      _ -> false
     end
   end
 
