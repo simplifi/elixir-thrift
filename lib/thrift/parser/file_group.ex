@@ -85,7 +85,7 @@ defmodule Thrift.Parser.FileGroup do
   end
 
   @spec set_current_module(t, atom) :: t
-  def set_current_module(file_group, module) do
+  def set_current_module(%FileGroup{} = file_group, module) do
     # since in a file, we can refer to things defined in that file in a non-qualified
     # way, we add unqualified names to the resolutions map.
 
