@@ -48,7 +48,7 @@ defmodule Thrift.Generator do
   end
 
   def generate_to_string!(%FileGroup{} = file_group) do
-    Enum.flat_map(file_group.schemas, fn {_, schema} ->
+    Enum.flat_map(file_group.schemas, fn {_, %Schema{} = schema} ->
       generate_schema(%Schema{schema | file_group: file_group})
     end)
     |> Enum.reverse()
@@ -58,7 +58,7 @@ defmodule Thrift.Generator do
     |> Enum.join("\n")
   end
 
-  def generate_schema(schema) do
+  def generate_schema(%Schema{} = schema) do
     current_module_file_group = FileGroup.set_current_module(schema.file_group, schema.module)
     schema = %Schema{schema | file_group: current_module_file_group}
 

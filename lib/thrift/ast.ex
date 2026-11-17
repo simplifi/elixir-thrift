@@ -465,23 +465,23 @@ defmodule Thrift.AST do
     end
 
     @spec merge(t, header | definition) :: t
-    defp merge(schema, %Include{} = inc) do
+    defp merge(%Schema{} = schema, %Include{} = inc) do
       %Schema{schema | includes: [inc | schema.includes]}
     end
 
-    defp merge(schema, %CppInclude{} = cpp_inc) do
+    defp merge(%Schema{} = schema, %CppInclude{} = cpp_inc) do
       %Schema{schema | cpp_includes: [cpp_inc | schema.cpp_includes]}
     end
 
-    defp merge(schema, %Namespace{} = ns) do
+    defp merge(%Schema{} = schema, %Namespace{} = ns) do
       %Schema{schema | namespaces: Map.put(schema.namespaces, ns.scope, ns)}
     end
 
-    defp merge(schema, %Constant{} = const) do
+    defp merge(%Schema{} = schema, %Constant{} = const) do
       %Schema{schema | constants: put_new_strict(schema.constants, const.name, const)}
     end
 
-    defp merge(schema, %TEnum{} = enum) do
+    defp merge(%Schema{} = schema, %TEnum{} = enum) do
       %Schema{
         schema
         | enums:
@@ -489,7 +489,7 @@ defmodule Thrift.AST do
       }
     end
 
-    defp merge(schema, %Exception{} = exc) do
+    defp merge(%Schema{} = schema, %Exception{} = exc) do
       fixed_fields =
         schema.module
         |> add_namespace_to_name(exc)
@@ -498,7 +498,7 @@ defmodule Thrift.AST do
       %Schema{schema | exceptions: put_new_strict(schema.exceptions, exc.name, fixed_fields)}
     end
 
-    defp merge(schema, %Struct{} = s) do
+    defp merge(%Schema{} = schema, %Struct{} = s) do
       fixed_fields =
         schema.module
         |> add_namespace_to_name(s)
@@ -507,7 +507,7 @@ defmodule Thrift.AST do
       %Schema{schema | structs: put_new_strict(schema.structs, s.name, fixed_fields)}
     end
 
-    defp merge(schema, %Union{} = union) do
+    defp merge(%Schema{} = schema, %Union{} = union) do
       fixed_fields =
         schema.module
         |> add_namespace_to_name(union)
@@ -516,7 +516,7 @@ defmodule Thrift.AST do
       %Schema{schema | unions: put_new_strict(schema.unions, union.name, fixed_fields)}
     end
 
-    defp merge(schema, %Service{} = service) do
+    defp merge(%Schema{} = schema, %Service{} = service) do
       %Schema{
         schema
         | services:
@@ -528,7 +528,7 @@ defmodule Thrift.AST do
       }
     end
 
-    defp merge(schema, {:typedef, actual_type, type_alias}) do
+    defp merge(%Schema{} = schema, {:typedef, actual_type, type_alias}) do
       %Schema{
         schema
         | typedefs:

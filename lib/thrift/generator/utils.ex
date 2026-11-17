@@ -298,12 +298,12 @@ defmodule Thrift.Generator.Utils do
   end
 
   def quote_value(%{} = value, {:map, {key_type, value_type}}, schema) do
-    Map.new(value, fn {key, value} ->
-      {
-        quote_value(key, key_type, schema),
-        quote_value(value, value_type, schema)
-      }
-    end)
+    pairs =
+      Enum.map(value, fn {key, val} ->
+        {quote_value(key, key_type, schema), quote_value(val, value_type, schema)}
+      end)
+
+    {:%{}, [], pairs}
   end
 
   def quote_value(%MapSet{} = set, {:set, type}, schema) do

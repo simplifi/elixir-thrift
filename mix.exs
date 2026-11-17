@@ -18,7 +18,7 @@ defmodule Thrift.Mixfile do
     [
       app: :thrift,
       version: @version,
-      elixir: "~> 1.7",
+      elixir: "~> 1.18",
       deps: deps(),
 
       # Build Environment
@@ -87,7 +87,7 @@ defmodule Thrift.Mixfile do
 
       # Runtime
       {:connection, "~> 1.0"},
-      {:ranch, ">= 2.1.0 and < 2.3.0"},
+      {:ranch, "~> 2.0"},
       {:telemetry, "~> 1.0"}
     ]
   end

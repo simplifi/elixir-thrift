@@ -30,26 +30,22 @@ jobs:
     name: Elixir ${{ matrix.elixir }} / OTP ${{ matrix.otp }}
     runs-on: ubuntu-latest
     container:
-      image: hexpm/elixir:${{ matrix.elixir }}-erlang-${{ matrix.otp }}-debian-bullseye-20210902-slim
+      image: hexpm/elixir:${{ matrix.elixir }}-erlang-${{ matrix.otp }}-debian-trixie-20260610-slim
     strategy:
       fail-fast: false
       matrix:
         include:
-          - elixir: '1.7.4'
-            otp: '22.3.4.26'
-          - elixir: '1.8.2'
-            otp: '22.3.4.26'
-          - elixir: '1.9.4'
-            otp: '22.3.4.26'
+          - elixir: '1.18.3'
+            otp: '27.1.2'
+          - elixir: '1.19.4'
+            otp: '28.1.1'
             coverage: true
-          - elixir: '1.10.4'
-            otp: '22.3.4.26'
     env:
       MIX_ENV: test
     steps:
       - name: Install git
         run: |
-          sed -i '/security.debian.org/d' /etc/apt/sources.list
+          sed -i '/security.debian.org/d' /etc/apt/sources.list.d/debian.sources
           apt-get update -y && apt-get install -y git
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
       - name: Set up dependency cache
@@ -72,7 +68,7 @@ jobs:
       - name: Compile
         run: |
           mix deps.compile
-          mix compile --force --warnings-as-errors
+          mix compile --warnings-as-errors
       - name: Run tests
         if: '!matrix.coverage'
         run: mix test

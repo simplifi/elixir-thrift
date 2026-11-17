@@ -60,8 +60,13 @@ defmodule Servers.Binary.Framed.SSLTest do
   end
 
   def build_ssl_client(ctx) do
+    certs_path = Path.join([__DIR__, "..", "..", "..", "support", "certs"]) |> Path.expand()
+    ca_cert = Path.join(certs_path, "ca_cert.pem")
+
     {:ok, ssl_client} =
-      Client.start_link("localhost", ctx.port, ssl_opts: ctx[:ssl_opts] ++ [enabled: true])
+      Client.start_link("localhost", ctx.port,
+        ssl_opts: ctx[:ssl_opts] ++ [enabled: true, cacertfile: ca_cert, verify: :verify_peer]
+      )
 
     {:ok, ssl_client: ssl_client}
   end
